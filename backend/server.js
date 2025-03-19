@@ -2,6 +2,8 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const studentRoutes = require("./routes/studentRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -12,6 +14,16 @@ const app = express();
 // Middleware
 app.use(cors()); // Enable CORS for frontend-backend communication
 app.use(express.json()); // Parse JSON request bodies
+app.use("/api", studentRoutes); // Use student routes
+
+// Connect to MongoDB
+mongoose
+    .connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error("MongoDB connection error:", err));
 
 // Define a simple API endpoint
 app.get("/api", (req, res) => {
