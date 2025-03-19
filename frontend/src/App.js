@@ -1,21 +1,20 @@
-// App.js
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import StudentList from "./components/StudentList";
+import AddStudent from "./components/AddStudent";
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [students, setStudents] = useState([]);
 
-  // Fetch data from the backend
-  useEffect(() => {
-    fetch("http://localhost:5000/api")
-      .then((response) => response.json())
-      .then((data) => setMessage(data.message))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  // Function to handle new student addition
+  const handleStudentAdded = (newStudent) => {
+    setStudents([...students, newStudent]);
+  };
 
   return (
     <div className="App">
       <h1>School Management System</h1>
-      <p>Message from the backend: {message}</p>
+      <AddStudent onStudentAdded={handleStudentAdded} />
+      <StudentList />
     </div>
   );
 }
