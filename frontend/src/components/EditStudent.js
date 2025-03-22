@@ -1,27 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../api";
 
-const AddStudent = ({ onStudentAdded }) => {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [grade, setGrade] = useState("");
+const EditStudent = ({ student, onStudentUpdated }) => {
+  const [name, setName] = useState(student.name);
+  const [age, setAge] = useState(student.age);
+  const [grade, setGrade] = useState(student.grade);
+
+  useEffect(() => {
+    setName(student.name);
+    setAge(student.age);
+    setGrade(student.grade);
+  }, [student]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/students", { name, age, grade });
-      onStudentAdded(response.data);
-      setName("");
-      setAge("");
-      setGrade("");
+      const response = await api.put(`/students/${student._id}`, {
+        name,
+        age,
+        grade,
+      });
+      onStudentUpdated(response.data);
     } catch (error) {
-      console.error("Error adding student:", error);
+      console.error("Error updating student:", error);
     }
   };
 
   return (
     <div className="container mt-4">
-      <h2>Add Student</h2>
+      <h2>Edit Student</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Name:</label>
@@ -54,11 +61,11 @@ const AddStudent = ({ onStudentAdded }) => {
           />
         </div>
         <button type="submit" className="btn btn-primary">
-          Add Student
+          Update Student
         </button>
       </form>
     </div>
   );
 };
 
-export default AddStudent;
+export default EditStudent;
