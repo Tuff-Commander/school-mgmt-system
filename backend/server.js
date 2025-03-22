@@ -4,6 +4,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const studentRoutes = require("./routes/studentRoutes");
+const parentRoutes = require("./routes/parentRoutes");
+const Parent = require("./models/Parent"); // Adjust the path as needed
 
 // Load environment variables
 dotenv.config();
@@ -15,6 +17,7 @@ const app = express();
 app.use(cors()); // Enable CORS for frontend-backend communication
 app.use(express.json()); // Parse JSON request bodies
 app.use("/api", studentRoutes); // Use student routes
+app.use("/api", parentRoutes);
 
 // Connect to MongoDB
 mongoose
@@ -28,6 +31,10 @@ mongoose
 // Define a simple API endpoint
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from the backend!" });
+});
+
+app.post("/api/parents", (req, res) => {
+  res.send("Parent added successfully!");
 });
 
 // Start the server
