@@ -16,7 +16,9 @@ const ParentPortal = ({ parentId }) => {
       }
     };
 
-    fetchStudents();
+    if (parentId) {
+      fetchStudents();
+    }
   }, [parentId]);
 
   return (

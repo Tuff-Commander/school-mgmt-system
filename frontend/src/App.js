@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
-import StudentList from "./components/StudentList"; // Default import
-import AddStudent from "./components/AddStudent"; // Default import
-import EditStudent from "./components/EditStudent"; // Default import
-import ParentPortal from "./components/ParentPortal"; // Default import
+import Login from "./components/Login";
+import TeacherDashboard from "./components/TeacherDashboard";
+import StudentList from "./components/StudentList";
+import AddStudent from "./components/AddStudent";
+import EditStudent from "./components/EditStudent";
+import ParentPortal from "./components/ParentPortal";
 import api from "./api"; // Ensure this is the correct path
 
 function App() {
   const [students, setStudents] = useState([]);
   const [editingStudent, setEditingStudent] = useState(null);
-  const [parentId, setParentId] = useState("67ded0b092aff0ba279f857d"); // Initialize with an empty string
-  const [parents, setParents] = useState([]); // State to store all parents
+  const [parentId] = useState("67ded0b092aff0ba279f857d"); // Initialize with a valid parent ID
+  const [token, setToken] = useState(() => localStorage.getItem("token") || "");
 
   // Fetch all parents on component mount
   useEffect(() => {
     const fetchParents = async () => {
       try {
         const response = await api.get("/parents");
-        setParents(response.data);
+        console.log("Fetched parents:", response.data); // Debugging
       } catch (error) {
         console.error("Error fetching parents:", error);
       }
@@ -49,40 +51,29 @@ function App() {
     <div className="App">
       <h1 className="text-center my-4">School Management System</h1>
       <div className="container">
-        <div className="mb-4">
-          <label htmlFor="parentSelect" className="form-label">
-            Select Parent:
-          </label>
-          <select
-            id="parentSelect"
-            className="form-select"
-            value={parentId}
-            onChange={(e) => setParentId(e.target.value)}
-          >
-            <option value="">Select a parent</option>
-            {parents.map((parent) => (
-              <option key={parent._id} value={parent._id}>
-                {parent.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {editingStudent ? (
-          <EditStudent
-            student={editingStudent}
-            onStudentUpdated={handleStudentUpdated}
-          />
-        ) : (
+        {token ? ( // If the user is logged in, show the dashboard
           <>
-            <AddStudent onStudentAdded={handleStudentAdded} />
-            <StudentList
-              onStudentUpdated={handleStudentUpdated}
-              onStudentDeleted={handleStudentDeleted}
-              onEditStudent={setEditingStudent}
-            />
+            {editingStudent ? (
+              <EditStudent
+                student={editingStudent}
+                onStudentUpdated={handleStudentUpdated}
+              />
+            ) : (
+              <>
+                <AddStudent onStudentAdded={handleStudentAdded} />
+                <StudentList
+                  onStudentUpdated={handleStudentUpdated}
+                  onStudentDeleted={handleStudentDeleted}
+                  onEditStudent={setEditingStudent}
+                />
+                <ParentPortal parentId={parentId} />
+                <TeacherDashboard />
+              </>
+            )}
           </>
+        ) : ( // If the user is not logged in, show the login form
+          <Login onLogin={(token) => setToken(token)} />
         )}
-        {parentId && <ParentPortal parentId={parentId} />}
       </div>
     </div>
   );

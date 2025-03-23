@@ -5,7 +5,19 @@ const Student = require("../models/Student");
 const router = express.Router();
 
 // Get student data for a parent
-router.get("/parents/:id/students", async (req, res) => {
+router.get("/parents", async (req, res) => {
+    try {
+      console.log("Fetching parents from the database..."); // Debugging
+      const parents = await Parent.find();
+      console.log("Parents fetched:", parents); // Debugging
+      res.json(parents);
+    } catch (error) {
+      console.error("Error fetching parents:", error); // Debugging
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  router.get("/parents/:id/students", async (req, res) => {
     try {
       const parent = await Parent.findById(req.params.id).populate("children");
       if (!parent) {

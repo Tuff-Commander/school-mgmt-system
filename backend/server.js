@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const studentRoutes = require("./routes/studentRoutes");
 const parentRoutes = require("./routes/parentRoutes");
 const Parent = require("./models/Parent"); // Adjust the path as needed
+const teacherRoutes = require("./routes/teacherRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(cors()); // Enable CORS for frontend-backend communication
 app.use(express.json()); // Parse JSON request bodies
 app.use("/api", studentRoutes); // Use student routes
 app.use("/api", parentRoutes);
+app.use("/api", teacherRoutes);
 
 // Connect to MongoDB
 mongoose
